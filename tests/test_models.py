@@ -283,9 +283,11 @@ class TestUpdateVehicleRequest:
             is_archived=False,
         )
         d = req.to_dict()
+        assert d["name"] == "Civic"
         assert d["make"] == "Honda"
         assert d["model"] == "Civic"
         assert d["year"] == "2021"
+        assert d["fuelType"] == "Petrol"
         assert d["isDefault"] is True
         assert d["isArchived"] is False
 
