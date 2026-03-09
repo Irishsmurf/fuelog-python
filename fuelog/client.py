@@ -160,7 +160,7 @@ class FuelogClient:
             FuelogForbiddenError: If the token lacks the ``write:logs`` scope.
         """
         resp = self._request("POST", {"type": "logs"}, body=request.to_dict())
-        return resp["id"]
+        return str(resp["id"])
 
     def update_log(self, log_id: str, request: UpdateFuelLogRequest) -> bool:
         """Update an existing fuel log entry.
@@ -177,7 +177,7 @@ class FuelogClient:
             FuelogForbiddenError: If the token lacks the ``write:logs`` scope.
         """
         resp = self._request("PUT", {"type": "logs", "id": log_id}, body=request.to_dict())
-        return resp.get("success", False)
+        return bool(resp.get("success", False))
 
     def delete_log(self, log_id: str) -> bool:
         """Delete a fuel log entry.
@@ -193,7 +193,7 @@ class FuelogClient:
             FuelogForbiddenError: If the token lacks the ``write:logs`` scope.
         """
         resp = self._request("DELETE", {"type": "logs", "id": log_id})
-        return resp.get("success", False)
+        return bool(resp.get("success", False))
 
     # ------------------------------------------------------------------
     # Vehicles
@@ -227,7 +227,7 @@ class FuelogClient:
             FuelogForbiddenError: If the token lacks the ``write:vehicles`` scope.
         """
         resp = self._request("POST", {"type": "vehicles"}, body=request.to_dict())
-        return resp["id"]
+        return str(resp["id"])
 
     def update_vehicle(self, vehicle_id: str, request: UpdateVehicleRequest) -> bool:
         """Update an existing vehicle profile.
@@ -248,7 +248,7 @@ class FuelogClient:
             {"type": "vehicles", "id": vehicle_id},
             body=request.to_dict(),
         )
-        return resp.get("success", False)
+        return bool(resp.get("success", False))
 
     def delete_vehicle(self, vehicle_id: str) -> bool:
         """Delete a vehicle profile.
@@ -264,7 +264,7 @@ class FuelogClient:
             FuelogForbiddenError: If the token lacks the ``write:vehicles`` scope.
         """
         resp = self._request("DELETE", {"type": "vehicles", "id": vehicle_id})
-        return resp.get("success", False)
+        return bool(resp.get("success", False))
 
     # ------------------------------------------------------------------
     # Analytics
