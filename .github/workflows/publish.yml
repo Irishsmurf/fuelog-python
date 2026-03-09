@@ -39,9 +39,11 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
 
   # Also publish to TestPyPI on every release for validation
+  # Requires a Trusted Publisher configured on test.pypi.org
   test-pypi:
     name: Publish to TestPyPI
     runs-on: ubuntu-latest
+    continue-on-error: true
     environment:
       name: testpypi
       url: https://test.pypi.org/p/fuelog
