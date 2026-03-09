@@ -311,19 +311,20 @@ class AnalyticsStats:
     avg_cost_per_km: float | None = None
     extra: dict[str, Any] = field(default_factory=dict)
 
+    _KNOWN_KEYS = {
+        "logCount",
+        "totalSpent",
+        "homeCurrency",
+        "totalFuelLiters",
+        "totalDistanceKm",
+        "efficiency",
+        "avgCostPerLiter",
+        "avgCostPerKm",
+    }
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> AnalyticsStats:
-        known = {
-            "logCount",
-            "totalSpent",
-            "homeCurrency",
-            "totalFuelLiters",
-            "totalDistanceKm",
-            "efficiency",
-            "avgCostPerLiter",
-            "avgCostPerKm",
-        }
-        extra = {k: v for k, v in data.items() if k not in known}
+        extra = {k: v for k, v in data.items() if k not in cls._KNOWN_KEYS}
         return cls(
             log_count=data.get("logCount"),
             total_spent=data.get("totalSpent"),
