@@ -6,6 +6,7 @@ import json
 from io import BytesIO
 from typing import Any
 from unittest.mock import MagicMock
+from urllib.error import HTTPError
 
 import pytest
 
@@ -70,10 +71,8 @@ def make_response(body: Any, status: int = 200) -> MagicMock:
     return mock_resp
 
 
-def make_http_error(status: int, body: Any = None) -> MagicMock:
-    """Return a mock HTTPError that raises on urlopen."""
-    from urllib.error import HTTPError
-
+def make_http_error(status: int, body: Any = None) -> HTTPError:
+    """Return an HTTPError that raises on urlopen."""
     err_body = json.dumps(body or {"error": "error"}).encode()
     return HTTPError(
         url="https://api.fuelog.app/api/rest",
