@@ -240,7 +240,7 @@ is created.  The workflow uses [OIDC Trusted Publishing](https://docs.pypi.org/t
 To set up a new repo:
 
 1. Create a Trusted Publisher on [pypi.org/manage/account/publishing/](https://pypi.org/manage/account/publishing/) pointing to this repository.
-2. Tag a release: `git tag v1.0.0 && git push --tags`.
+2. Tag a release: `git tag vX.Y.Z && git push --tags`.
 3. Create a GitHub Release from the tag — the `publish.yml` workflow triggers automatically.
 
 ---
