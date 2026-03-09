@@ -1,0 +1,32 @@
+coverage:
+  precision: 2
+  round: down
+  range: "85...100"
+
+  status:
+    # ── Project status ────────────────────────────────────────────────────────
+    # Measures overall project coverage and compares it against the base commit.
+    # Fails if coverage drops by more than 1% from the base.
+    project:
+      default:
+        target: auto        # compare against the base commit's coverage
+        threshold: 1%       # allow up to 1% drop before failing
+        base: auto
+        if_not_found: success
+        if_ci_failed: error
+
+    # ── Patch status ─────────────────────────────────────────────────────────
+    # Measures coverage of lines introduced in the PR/commit.
+    # Requires at least 90% of new lines to be covered.
+    patch:
+      default:
+        target: 90%
+        threshold: 1%
+        if_not_found: success
+        if_ci_failed: error
+
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default
+  require_changes: true   # only comment when coverage changes
+  hide_project_coverage: false
