@@ -25,4 +25,3 @@ with zero third-party dependencies, typed models, and a comprehensive test suite
 
    GitHub <https://github.com/Irishsmurf/fuelog-python>
    PyPI <https://pypi.org/project/fuelog/>
-   Changelog <changelog>

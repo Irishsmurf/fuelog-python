@@ -39,7 +39,6 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build"]
 
 html_theme = "furo"
-html_static_path = ["_static"]
 html_title = f"fuelog-python {release}"
 html_theme_options = {
     "source_repository": "https://github.com/Irishsmurf/fuelog-python",
