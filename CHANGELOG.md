@@ -7,6 +7,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.1.0] — 2026-03-09
+
+### Fixed
+- Corrected PyPI badge URLs in README to use package name `fuelog`.
+- Fixed Read the Docs build: removed duplicate changelog toctree entry and missing `_static` path warning.
+
+### Changed
+- TestPyPI publish job is now non-blocking (`continue-on-error: true`).
+
+---
+
 ## [1.0.0] — 2026-03-09
 
 ### Added
