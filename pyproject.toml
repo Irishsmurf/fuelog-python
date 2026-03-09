@@ -36,11 +36,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage       = "https://github.com/fuelog/fuelog-python"
-Documentation  = "https://fuelog-python.readthedocs.io"
-Repository     = "https://github.com/fuelog/fuelog-python"
-"Bug Tracker"  = "https://github.com/fuelog/fuelog-python/issues"
-Changelog      = "https://github.com/fuelog/fuelog-python/blob/main/CHANGELOG.md"
+Homepage       = "https://github.com/Irishsmurf/fuelog-python"
+Documentation  = "https://github.com/Irishsmurf/fuelog-python#readme"
+Repository     = "https://github.com/Irishsmurf/fuelog-python"
+"Bug Tracker"  = "https://github.com/Irishsmurf/fuelog-python/issues"
+Changelog      = "https://github.com/Irishsmurf/fuelog-python/blob/main/CHANGELOG.md"
 
 # ---------------------------------------------------------------------------
 # Hatchling version source
