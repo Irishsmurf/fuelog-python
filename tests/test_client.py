@@ -8,6 +8,7 @@ from unittest.mock import patch
 import pytest
 
 from fuelog import (
+    FuelogAPIError,
     FuelogAuthError,
     FuelogForbiddenError,
     FuelogNotFoundError,
@@ -15,6 +16,7 @@ from fuelog import (
     FuelogServerError,
     FuelogValidationError,
 )
+from fuelog.client import _raise_for_status
 from fuelog.models import (
     CreateFuelLogRequest,
     CreateVehicleRequest,
@@ -407,6 +409,23 @@ class TestAuthHeader:
             rest_client.list_logs()
 
         assert captured["auth"] == "Bearer test-token"
+
+
+# ---------------------------------------------------------------------------
+# _raise_for_status
+# ---------------------------------------------------------------------------
+
+
+class TestRaiseForStatus:
+    def test_malformed_json_body_falls_back_to_raw(self):
+        with pytest.raises(FuelogAuthError) as exc_info:
+            _raise_for_status(401, "not-valid-json{{{")
+        assert exc_info.value.status_code == 401
+
+    def test_unrecognized_status_raises_generic_api_error(self):
+        with pytest.raises(FuelogAPIError) as exc_info:
+            _raise_for_status(400, '{"error": "bad request"}')
+        assert exc_info.value.status_code == 400
 
 
 # ---------------------------------------------------------------------------
