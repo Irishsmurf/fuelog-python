@@ -7,7 +7,7 @@
 [![Docs](https://readthedocs.org/projects/fuelog-python/badge/?version=latest)](https://fuelog-python.readthedocs.io/en/latest/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Official Python client library for the [Fuelog](https://fuelog.app) API.
+Official Python client library for the [Fuelog](https://fuelog.paddez.com/) API.
 
 Covers the full **REST API** *and* the **MCP (Model Context Protocol) server** — with zero
 third-party dependencies, typed models, and a comprehensive test suite.
