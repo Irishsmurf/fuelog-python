@@ -15,9 +15,9 @@ from __future__ import annotations
 
 import json
 from typing import Any
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
-from urllib.error import HTTPError, URLError
 
 from fuelog._version import __version__
 from fuelog.exceptions import (
@@ -176,9 +176,7 @@ class FuelogClient:
             FuelogNotFoundError: If no log with ``log_id`` exists.
             FuelogForbiddenError: If the token lacks the ``write:logs`` scope.
         """
-        resp = self._request(
-            "PUT", {"type": "logs", "id": log_id}, body=request.to_dict()
-        )
+        resp = self._request("PUT", {"type": "logs", "id": log_id}, body=request.to_dict())
         return resp.get("success", False)
 
     def delete_log(self, log_id: str) -> bool:

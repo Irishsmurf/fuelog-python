@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from fuelog.models import (
     AnalyticsStats,
     CostOptimizationPeriod,
@@ -11,7 +9,6 @@ from fuelog.models import (
     CreateVehicleRequest,
     FuelLog,
     FuelType,
-    MCPPromptMessage,
     MCPPromptResult,
     MCPToolResult,
     TrendMetric,

@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
-from fuelog import FuelogAPIError, FuelogMCPClient, FuelogMCPError
+from fuelog import FuelogAPIError, FuelogMCPError
 from fuelog.models import CostOptimizationPeriod, FuelType, TrendMetric
-
 from tests.conftest import make_http_error, make_response
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -83,24 +81,24 @@ class TestMCPTransport:
         assert captured["auth"] == "Bearer test-token"
 
     def test_rpc_error_raises_mcp_error(self, mcp_client):
-        with urlopen_returning(_rpc_error(-32601, "Method not found")):
-            with pytest.raises(FuelogMCPError) as exc_info:
-                mcp_client.list_vehicles()
+        with (
+            urlopen_returning(_rpc_error(-32601, "Method not found")),
+            pytest.raises(FuelogMCPError) as exc_info,
+        ):
+            mcp_client.list_vehicles()
 
         assert exc_info.value.code == -32601
         assert "Method not found" in str(exc_info.value)
 
     def test_http_error_raises_api_error(self, mcp_client):
-        with urlopen_raising(make_http_error(500)):
-            with pytest.raises(FuelogAPIError):
-                mcp_client.list_vehicles()
+        with urlopen_raising(make_http_error(500)), pytest.raises(FuelogAPIError):
+            mcp_client.list_vehicles()
 
     def test_network_error_raises_api_error(self, mcp_client):
         from urllib.error import URLError
 
-        with urlopen_raising(URLError("Connection refused")):
-            with pytest.raises(FuelogAPIError):
-                mcp_client.list_vehicles()
+        with urlopen_raising(URLError("Connection refused")), pytest.raises(FuelogAPIError):
+            mcp_client.list_vehicles()
 
     def test_ids_are_unique_across_calls(self, mcp_client):
         ids = []
@@ -329,9 +327,7 @@ class TestMCPAddVehicle:
             return make_response(_rpc_success(TOOL_RESPONSE))
 
         with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
-            mcp_client.add_vehicle(
-                name="X", make="X", model="X", year="2020", fuel_type="Electric"
-            )
+            mcp_client.add_vehicle(name="X", make="X", model="X", year="2020", fuel_type="Electric")
 
         assert captured["args"]["fuelType"] == "Electric"
 
@@ -430,8 +426,14 @@ class TestMCPResources:
             mcp_client.read_resource("fuelog://logs")
 
         assert captured["params"]["uri"] == "fuelog://logs"
-        assert json.loads(captured["params"]["uri"].replace("fuelog://", "").split("/")[0]
-                          if False else "logs") == "logs"  # readability check
+        assert (
+            json.loads(
+                captured["params"]["uri"].replace("fuelog://", "").split("/")[0]
+                if False
+                else "logs"
+            )
+            == "logs"
+        )  # readability check
 
     def test_convenience_resource_methods(self, mcp_client):
         """All helper resource methods call read_resource with the right URI."""
@@ -446,8 +448,8 @@ class TestMCPResources:
         for method_name, expected_uri in expectations.items():
             captured = {}
 
-            def fake_urlopen(req, timeout, _uri=expected_uri):
-                captured["uri"] = json.loads(req.data.decode())["params"]["uri"]
+            def fake_urlopen(req, timeout, _uri=expected_uri, _captured=captured):
+                _captured["uri"] = json.loads(req.data.decode())["params"]["uri"]
                 return make_response(_rpc_success({}))
 
             with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
@@ -531,9 +533,7 @@ class TestMCPPrompts:
             return make_response(_rpc_success(PROMPT_RESPONSE))
 
         with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
-            mcp_client.trend_analysis(
-                start_date="2025-01-01", end_date="2025-12-31", metric="mpg"
-            )
+            mcp_client.trend_analysis(start_date="2025-01-01", end_date="2025-12-31", metric="mpg")
 
         assert captured["args"]["metric"] == "mpg"
 

@@ -13,7 +13,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
-
 # ---------------------------------------------------------------------------
 # Enumerations
 # ---------------------------------------------------------------------------
@@ -72,7 +71,7 @@ class FuelLog:
     timestamp: str | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "FuelLog":
+    def from_dict(cls, data: dict[str, Any]) -> FuelLog:
         return cls(
             id=data["id"],
             brand=data.get("brand"),
@@ -221,7 +220,7 @@ class Vehicle:
     is_archived: bool | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "Vehicle":
+    def from_dict(cls, data: dict[str, Any]) -> Vehicle:
         return cls(
             id=data["id"],
             name=data.get("name"),
@@ -284,9 +283,7 @@ class UpdateVehicleRequest:
             payload["year"] = self.year
         if self.fuel_type is not None:
             payload["fuelType"] = (
-                self.fuel_type.value
-                if isinstance(self.fuel_type, FuelType)
-                else self.fuel_type
+                self.fuel_type.value if isinstance(self.fuel_type, FuelType) else self.fuel_type
             )
         if self.is_default is not None:
             payload["isDefault"] = self.is_default
@@ -315,7 +312,7 @@ class AnalyticsStats:
     extra: dict[str, Any] = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "AnalyticsStats":
+    def from_dict(cls, data: dict[str, Any]) -> AnalyticsStats:
         known = {
             "logCount",
             "totalSpent",
@@ -353,7 +350,7 @@ class MCPToolResult:
     is_error: bool = False
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "MCPToolResult":
+    def from_dict(cls, data: dict[str, Any]) -> MCPToolResult:
         return cls(
             content=data.get("content", []),
             is_error=data.get("isError", False),
@@ -362,11 +359,7 @@ class MCPToolResult:
     @property
     def text(self) -> str:
         """Convenience: concatenate all text-type content blocks."""
-        parts = [
-            block.get("text", "")
-            for block in self.content
-            if block.get("type") == "text"
-        ]
+        parts = [block.get("text", "") for block in self.content if block.get("type") == "text"]
         return "\n".join(parts)
 
 
@@ -378,7 +371,7 @@ class MCPPromptMessage:
     content: dict[str, Any]
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "MCPPromptMessage":
+    def from_dict(cls, data: dict[str, Any]) -> MCPPromptMessage:
         return cls(role=data["role"], content=data["content"])
 
 
@@ -390,7 +383,7 @@ class MCPPromptResult:
     messages: list[MCPPromptMessage]
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "MCPPromptResult":
+    def from_dict(cls, data: dict[str, Any]) -> MCPPromptResult:
         return cls(
             description=data.get("description"),
             messages=[MCPPromptMessage.from_dict(m) for m in data.get("messages", [])],

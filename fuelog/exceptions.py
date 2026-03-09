@@ -29,11 +29,7 @@ class FuelogAPIError(FuelogError):
         super().__init__(message)
 
     def __repr__(self) -> str:
-        return (
-            f"{type(self).__name__}("
-            f"message={str(self)!r}, "
-            f"status_code={self.status_code!r})"
-        )
+        return f"{type(self).__name__}(message={str(self)!r}, status_code={self.status_code!r})"
 
 
 class FuelogAuthError(FuelogAPIError):
@@ -79,8 +75,4 @@ class FuelogMCPError(FuelogError):
         super().__init__(message)
 
     def __repr__(self) -> str:
-        return (
-            f"{type(self).__name__}("
-            f"message={str(self)!r}, "
-            f"code={self.code!r})"
-        )
+        return f"{type(self).__name__}(message={str(self)!r}, code={self.code!r})"

@@ -331,9 +331,7 @@ class FuelogMCPClient:
         if year is not None:
             args["year"] = year
         if fuel_type is not None:
-            args["fuelType"] = (
-                fuel_type.value if isinstance(fuel_type, FuelType) else fuel_type
-            )
+            args["fuelType"] = fuel_type.value if isinstance(fuel_type, FuelType) else fuel_type
         if is_default is not None:
             args["isDefault"] = is_default
         if is_archived is not None:
@@ -503,7 +501,5 @@ class FuelogMCPClient:
         """
         args: dict[str, Any] = {}
         if period is not None:
-            args["period"] = (
-                period.value if isinstance(period, CostOptimizationPeriod) else period
-            )
+            args["period"] = period.value if isinstance(period, CostOptimizationPeriod) else period
         return self._get_prompt("cost_optimization", args)

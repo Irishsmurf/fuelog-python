@@ -3,23 +3,32 @@
 from __future__ import annotations
 
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
 from fuelog import (
     FuelogAuthError,
-    FuelogClient,
     FuelogForbiddenError,
     FuelogNotFoundError,
     FuelogRateLimitError,
     FuelogServerError,
     FuelogValidationError,
 )
-from fuelog.models import CreateFuelLogRequest, CreateVehicleRequest, FuelType, UpdateFuelLogRequest, UpdateVehicleRequest
-
-from tests.conftest import SAMPLE_ANALYTICS, SAMPLE_LOG, SAMPLE_VEHICLE, make_http_error, make_response
-
+from fuelog.models import (
+    CreateFuelLogRequest,
+    CreateVehicleRequest,
+    FuelType,
+    UpdateFuelLogRequest,
+    UpdateVehicleRequest,
+)
+from tests.conftest import (
+    SAMPLE_ANALYTICS,
+    SAMPLE_LOG,
+    SAMPLE_VEHICLE,
+    make_http_error,
+    make_response,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -27,9 +36,7 @@ from tests.conftest import SAMPLE_ANALYTICS, SAMPLE_LOG, SAMPLE_VEHICLE, make_ht
 
 
 def urlopen_returning(body, status=200):
-    return patch(
-        "fuelog.client.urlopen", return_value=make_response(body, status)
-    )
+    return patch("fuelog.client.urlopen", return_value=make_response(body, status))
 
 
 def urlopen_raising(exc):
@@ -82,20 +89,17 @@ class TestListLogs:
         assert "limit=100" in captured["url"]
 
     def test_401_raises_auth_error(self, rest_client):
-        with urlopen_raising(make_http_error(401)):
-            with pytest.raises(FuelogAuthError) as exc_info:
-                rest_client.list_logs()
+        with urlopen_raising(make_http_error(401)), pytest.raises(FuelogAuthError) as exc_info:
+            rest_client.list_logs()
         assert exc_info.value.status_code == 401
 
     def test_500_raises_server_error(self, rest_client):
-        with urlopen_raising(make_http_error(500)):
-            with pytest.raises(FuelogServerError):
-                rest_client.list_logs()
+        with urlopen_raising(make_http_error(500)), pytest.raises(FuelogServerError):
+            rest_client.list_logs()
 
     def test_429_raises_rate_limit_error(self, rest_client):
-        with urlopen_raising(make_http_error(429)):
-            with pytest.raises(FuelogRateLimitError):
-                rest_client.list_logs()
+        with urlopen_raising(make_http_error(429)), pytest.raises(FuelogRateLimitError):
+            rest_client.list_logs()
 
 
 # ---------------------------------------------------------------------------
@@ -141,23 +145,20 @@ class TestCreateLog:
         assert body["vehicleId"] == "v1"
 
     def test_403_raises_forbidden(self, rest_client):
-        with urlopen_raising(make_http_error(403, {"error": "Insufficient scope"})):
-            with pytest.raises(FuelogForbiddenError) as exc_info:
-                rest_client.create_log(
-                    CreateFuelLogRequest(
-                        brand="X", cost=1.0, distance_km=1.0, fuel_amount_liters=1.0
-                    )
-                )
+        with (
+            urlopen_raising(make_http_error(403, {"error": "Insufficient scope"})),
+            pytest.raises(FuelogForbiddenError) as exc_info,
+        ):
+            rest_client.create_log(
+                CreateFuelLogRequest(brand="X", cost=1.0, distance_km=1.0, fuel_amount_liters=1.0)
+            )
         assert exc_info.value.status_code == 403
 
     def test_422_raises_validation_error(self, rest_client):
-        with urlopen_raising(make_http_error(422)):
-            with pytest.raises(FuelogValidationError):
-                rest_client.create_log(
-                    CreateFuelLogRequest(
-                        brand="X", cost=1.0, distance_km=1.0, fuel_amount_liters=1.0
-                    )
-                )
+        with urlopen_raising(make_http_error(422)), pytest.raises(FuelogValidationError):
+            rest_client.create_log(
+                CreateFuelLogRequest(brand="X", cost=1.0, distance_km=1.0, fuel_amount_liters=1.0)
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -184,9 +185,8 @@ class TestUpdateLog:
         assert "id=log-XYZ" in captured["url"]
 
     def test_404_raises_not_found(self, rest_client):
-        with urlopen_raising(make_http_error(404)):
-            with pytest.raises(FuelogNotFoundError):
-                rest_client.update_log("no-such-log", UpdateFuelLogRequest())
+        with urlopen_raising(make_http_error(404)), pytest.raises(FuelogNotFoundError):
+            rest_client.update_log("no-such-log", UpdateFuelLogRequest())
 
 
 # ---------------------------------------------------------------------------
@@ -215,9 +215,8 @@ class TestDeleteLog:
         assert "id=log-DEL" in captured["url"]
 
     def test_404_raises_not_found(self, rest_client):
-        with urlopen_raising(make_http_error(404)):
-            with pytest.raises(FuelogNotFoundError):
-                rest_client.delete_log("ghost")
+        with urlopen_raising(make_http_error(404)), pytest.raises(FuelogNotFoundError):
+            rest_client.delete_log("ghost")
 
 
 # ---------------------------------------------------------------------------
@@ -319,9 +318,7 @@ class TestUpdateVehicle:
             return make_response({"success": True})
 
         with patch("fuelog.client.urlopen", side_effect=fake_urlopen):
-            rest_client.update_vehicle(
-                "v1", UpdateVehicleRequest(is_archived=True)
-            )
+            rest_client.update_vehicle("v1", UpdateVehicleRequest(is_archived=True))
 
         assert captured["body"]["isArchived"] is True
 
@@ -338,9 +335,8 @@ class TestDeleteVehicle:
         assert result is True
 
     def test_404_raises_not_found(self, rest_client):
-        with urlopen_raising(make_http_error(404)):
-            with pytest.raises(FuelogNotFoundError):
-                rest_client.delete_vehicle("ghost-vehicle")
+        with urlopen_raising(make_http_error(404)), pytest.raises(FuelogNotFoundError):
+            rest_client.delete_vehicle("ghost-vehicle")
 
 
 # ---------------------------------------------------------------------------
@@ -421,10 +417,13 @@ class TestAuthHeader:
 class TestNetworkError:
     def test_url_error_raises_api_error(self, rest_client):
         from urllib.error import URLError
+
         from fuelog import FuelogAPIError
 
-        with urlopen_raising(URLError("Connection refused")):
-            with pytest.raises(FuelogAPIError) as exc_info:
-                rest_client.list_logs()
+        with (
+            urlopen_raising(URLError("Connection refused")),
+            pytest.raises(FuelogAPIError) as exc_info,
+        ):
+            rest_client.list_logs()
 
         assert "Network error" in str(exc_info.value)
