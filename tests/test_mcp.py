@@ -426,14 +426,6 @@ class TestMCPResources:
             mcp_client.read_resource("fuelog://logs")
 
         assert captured["params"]["uri"] == "fuelog://logs"
-        assert (
-            json.loads(
-                captured["params"]["uri"].replace("fuelog://", "").split("/")[0]
-                if False
-                else "logs"
-            )
-            == "logs"
-        )  # readability check
 
     def test_convenience_resource_methods(self, mcp_client):
         """All helper resource methods call read_resource with the right URI."""
