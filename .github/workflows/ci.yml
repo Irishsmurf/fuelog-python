@@ -64,6 +64,7 @@ jobs:
             --cov=fuelog \
             --cov-report=xml \
             --cov-report=term-missing \
+            --junit-xml=junit.xml \
             -v
 
       - name: Upload coverage to Codecov
@@ -73,6 +74,15 @@ jobs:
           files: ./coverage.xml
           flags: unittests
           name: fuelog-python-coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+      - name: Upload test results to Codecov
+        if: always()
+        uses: codecov/test-results-action@v1
+        with:
+          files: ./junit.xml
+          flags: python${{ matrix.python-version }}
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
 
