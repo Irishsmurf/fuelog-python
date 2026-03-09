@@ -206,6 +206,30 @@ class TestMCPLogFuel:
             )
         assert result.text == "Tool result text"
 
+    def test_original_cost_exchange_rate_timestamp_sent(self, mcp_client):
+        """Cover the original_cost, exchange_rate and timestamp optional branches."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(TOOL_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.log_fuel(
+                brand="Esso",
+                cost=60.0,
+                distance_km=500.0,
+                fuel_amount_liters=40.0,
+                original_cost=55.0,
+                exchange_rate=1.1,
+                timestamp="2025-06-01T08:00:00Z",
+            )
+
+        args = captured["args"]
+        assert args["originalCost"] == 55.0
+        assert args["exchangeRate"] == 1.1
+        assert args["timestamp"] == "2025-06-01T08:00:00Z"
+
 
 # ---------------------------------------------------------------------------
 # Tools — edit_fuel_log
@@ -239,6 +263,35 @@ class TestMCPEditFuelLog:
 
         args = captured["args"]
         assert args == {"logId": "log-001"}
+
+    def test_all_optional_fields_sent(self, mcp_client):
+        """Cover distance_km, fuel_amount_liters, currency, original_cost,
+        exchange_rate, and vehicle_id optional branches."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(TOOL_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.edit_fuel_log(
+                "log-002",
+                distance_km=350.0,
+                fuel_amount_liters=28.0,
+                currency="USD",
+                original_cost=48.0,
+                exchange_rate=0.9,
+                vehicle_id="v2",
+            )
+
+        args = captured["args"]
+        assert args["logId"] == "log-002"
+        assert args["distanceKm"] == 350.0
+        assert args["fuelAmountLiters"] == 28.0
+        assert args["currency"] == "USD"
+        assert args["originalCost"] == 48.0
+        assert args["exchangeRate"] == 0.9
+        assert args["vehicleId"] == "v2"
 
 
 # ---------------------------------------------------------------------------
@@ -364,6 +417,44 @@ class TestMCPUpdateVehicle:
 
         assert captured["args"] == {"vehicleId": "v1"}
 
+    def test_all_optional_fields_sent(self, mcp_client):
+        """Cover make, model, year, fuel_type (enum), and is_default optional branches."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(TOOL_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.update_vehicle(
+                "v2",
+                make="Honda",
+                model="Civic",
+                year="2024",
+                fuel_type=FuelType.PETROL,
+                is_default=True,
+            )
+
+        args = captured["args"]
+        assert args["vehicleId"] == "v2"
+        assert args["make"] == "Honda"
+        assert args["model"] == "Civic"
+        assert args["year"] == "2024"
+        assert args["isDefault"] is True
+
+    def test_fuel_type_string_passthrough(self, mcp_client):
+        """Cover the fuel_type string branch in update_vehicle."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(TOOL_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.update_vehicle("v3", fuel_type="Diesel")
+
+        assert captured["args"]["fuelType"] == "Diesel"
+
 
 # ---------------------------------------------------------------------------
 # Tools — get_analytics / compare_vehicles
@@ -396,6 +487,19 @@ class TestMCPAnalytics:
         assert captured["args"]["vehicleId"] == "v1"
         assert captured["args"]["startDate"] == "2025-01-01"
 
+    def test_get_analytics_end_date_sent(self, mcp_client):
+        """Cover the end_date optional branch in get_analytics."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(TOOL_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.get_analytics(end_date="2025-12-31")
+
+        assert captured["args"]["endDate"] == "2025-12-31"
+
     def test_compare_vehicles_with_ids(self, mcp_client):
         captured = {}
 
@@ -407,6 +511,33 @@ class TestMCPAnalytics:
             mcp_client.compare_vehicles(vehicle_ids=["v1", "v2"])
 
         assert captured["args"]["vehicleIds"] == ["v1", "v2"]
+
+    def test_compare_vehicles_no_filters(self, mcp_client):
+        """Cover compare_vehicles with no arguments (all branches False)."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(TOOL_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.compare_vehicles()
+
+        assert captured["args"] == {}
+
+    def test_compare_vehicles_with_dates(self, mcp_client):
+        """Cover start_date and end_date optional branches in compare_vehicles."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(TOOL_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.compare_vehicles(start_date="2025-01-01", end_date="2025-06-30")
+
+        assert captured["args"]["startDate"] == "2025-01-01"
+        assert captured["args"]["endDate"] == "2025-06-30"
 
 
 # ---------------------------------------------------------------------------
@@ -499,6 +630,20 @@ class TestMCPPrompts:
         assert result.description == "A test prompt"
         assert result.messages[0].role == "user"
 
+    def test_monthly_report_without_vehicle_id(self, mcp_client):
+        """Cover the monthly_report path when vehicle_id is None."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(PROMPT_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.monthly_report("2025-04")
+
+        assert captured["args"] == {"month": "2025-04"}
+        assert "vehicleId" not in captured["args"]
+
     def test_trend_analysis_prompt_with_metric_enum(self, mcp_client):
         captured = {}
 
@@ -528,6 +673,37 @@ class TestMCPPrompts:
             mcp_client.trend_analysis(start_date="2025-01-01", end_date="2025-12-31", metric="mpg")
 
         assert captured["args"]["metric"] == "mpg"
+
+    def test_trend_analysis_with_vehicle_id(self, mcp_client):
+        """Cover the vehicle_id optional branch in trend_analysis."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(PROMPT_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.trend_analysis(
+                start_date="2025-01-01",
+                end_date="2025-12-31",
+                vehicle_id="v5",
+            )
+
+        assert captured["args"]["vehicleId"] == "v5"
+        assert "metric" not in captured["args"]
+
+    def test_trend_analysis_no_optional_args(self, mcp_client):
+        """Cover trend_analysis with neither metric nor vehicle_id."""
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(PROMPT_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.trend_analysis(start_date="2025-03-01", end_date="2025-03-31")
+
+        assert captured["args"] == {"startDate": "2025-03-01", "endDate": "2025-03-31"}
 
     def test_cost_optimization_default_period(self, mcp_client):
         captured = {}
