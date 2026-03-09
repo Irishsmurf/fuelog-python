@@ -65,6 +65,10 @@ class TestFuelLog:
         assert "distanceKm" not in d
         assert "id" not in d  # id is not part of the write payload
 
+    def test_to_dict_all_none_produces_empty(self):
+        log = FuelLog(id="log-5")
+        assert log.to_dict() == {}
+
     def test_to_dict_full(self):
         log = FuelLog(
             id="log-4",
@@ -263,6 +267,29 @@ class TestUpdateVehicleRequest:
     def test_fuel_type_enum(self):
         req = UpdateVehicleRequest(fuel_type=FuelType.HYBRID)
         assert req.to_dict() == {"fuelType": "Hybrid"}
+
+    def test_fuel_type_string_passthrough(self):
+        req = UpdateVehicleRequest(fuel_type="Petrol")
+        assert req.to_dict() == {"fuelType": "Petrol"}
+
+    def test_all_fields(self):
+        req = UpdateVehicleRequest(
+            name="Civic",
+            make="Honda",
+            model="Civic",
+            year="2021",
+            fuel_type=FuelType.PETROL,
+            is_default=True,
+            is_archived=False,
+        )
+        d = req.to_dict()
+        assert d["name"] == "Civic"
+        assert d["make"] == "Honda"
+        assert d["model"] == "Civic"
+        assert d["year"] == "2021"
+        assert d["fuelType"] == "Petrol"
+        assert d["isDefault"] is True
+        assert d["isArchived"] is False
 
 
 # ---------------------------------------------------------------------------
