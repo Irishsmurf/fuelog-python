@@ -34,10 +34,16 @@ dev = [
     "ruff>=0.4",
     "mypy>=1.9",
 ]
+docs = [
+    "sphinx>=7.3",
+    "furo>=2024.1",
+    "myst-parser>=3.0",
+    "sphinx-autodoc-typehints>=2.0",
+]
 
 [project.urls]
 Homepage       = "https://github.com/Irishsmurf/fuelog-python"
-Documentation  = "https://github.com/Irishsmurf/fuelog-python#readme"
+Documentation  = "https://fuelog-python.readthedocs.io"
 Repository     = "https://github.com/Irishsmurf/fuelog-python"
 "Bug Tracker"  = "https://github.com/Irishsmurf/fuelog-python/issues"
 Changelog      = "https://github.com/Irishsmurf/fuelog-python/blob/main/CHANGELOG.md"

@@ -1,9 +1,10 @@
 # fuelog-python
 
-[![CI](https://github.com/fuelog/fuelog-python/actions/workflows/ci.yml/badge.svg)](https://github.com/fuelog/fuelog-python/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/fuelog/fuelog-python/branch/main/graph/badge.svg)](https://codecov.io/gh/fuelog/fuelog-python)
+[![CI](https://github.com/Irishsmurf/fuelog-python/actions/workflows/ci.yml/badge.svg)](https://github.com/Irishsmurf/fuelog-python/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Irishsmurf/fuelog-python/branch/main/graph/badge.svg)](https://codecov.io/gh/Irishsmurf/fuelog-python)
 [![PyPI version](https://badge.fury.io/py/fuelog.svg)](https://badge.fury.io/py/fuelog)
 [![Python versions](https://img.shields.io/pypi/pyversions/fuelog.svg)](https://pypi.org/project/fuelog/)
+[![Docs](https://readthedocs.org/projects/fuelog-python/badge/?version=latest)](https://fuelog-python.readthedocs.io/en/latest/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Official Python client library for the [Fuelog](https://fuelog.app) API.
@@ -210,7 +211,7 @@ client = FuelogClient(
 
 ```bash
 # Clone and install in editable mode with dev dependencies
-git clone https://github.com/fuelog/fuelog-python.git
+git clone https://github.com/Irishsmurf/fuelog-python.git
 cd fuelog-python
 pip install -e ".[dev]"
 
