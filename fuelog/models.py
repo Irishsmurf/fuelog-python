@@ -13,6 +13,10 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
+def _filter_none(data: dict[str, Any]) -> dict[str, Any]:
+    """Return a new dict with all None values removed."""
+    return {k: v for k, v in data.items() if v is not None}
+
 # ---------------------------------------------------------------------------
 # Enumerations
 # ---------------------------------------------------------------------------
@@ -89,30 +93,21 @@ class FuelLog:
 
     def to_dict(self) -> dict[str, Any]:
         """Serialise to a dict suitable for the POST/PUT request body."""
-        payload: dict[str, Any] = {}
-        if self.brand is not None:
-            payload["brand"] = self.brand
-        if self.cost is not None:
-            payload["cost"] = self.cost
-        if self.distance_km is not None:
-            payload["distanceKm"] = self.distance_km
-        if self.fuel_amount_liters is not None:
-            payload["fuelAmountLiters"] = self.fuel_amount_liters
-        if self.currency is not None:
-            payload["currency"] = self.currency
-        if self.original_cost is not None:
-            payload["originalCost"] = self.original_cost
-        if self.exchange_rate is not None:
-            payload["exchangeRate"] = self.exchange_rate
-        if self.vehicle_id is not None:
-            payload["vehicleId"] = self.vehicle_id
-        if self.latitude is not None:
-            payload["latitude"] = self.latitude
-        if self.longitude is not None:
-            payload["longitude"] = self.longitude
-        if self.timestamp is not None:
-            payload["timestamp"] = self.timestamp
-        return payload
+        return _filter_none(
+            {
+                "brand": self.brand,
+                "cost": self.cost,
+                "distanceKm": self.distance_km,
+                "fuelAmountLiters": self.fuel_amount_liters,
+                "currency": self.currency,
+                "originalCost": self.original_cost,
+                "exchangeRate": self.exchange_rate,
+                "vehicleId": self.vehicle_id,
+                "latitude": self.latitude,
+                "longitude": self.longitude,
+                "timestamp": self.timestamp,
+            }
+        )
 
 
 @dataclass
@@ -132,27 +127,21 @@ class CreateFuelLogRequest:
     timestamp: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        payload: dict[str, Any] = {
-            "brand": self.brand,
-            "cost": self.cost,
-            "distanceKm": self.distance_km,
-            "fuelAmountLiters": self.fuel_amount_liters,
-        }
-        if self.currency is not None:
-            payload["currency"] = self.currency
-        if self.original_cost is not None:
-            payload["originalCost"] = self.original_cost
-        if self.exchange_rate is not None:
-            payload["exchangeRate"] = self.exchange_rate
-        if self.vehicle_id is not None:
-            payload["vehicleId"] = self.vehicle_id
-        if self.latitude is not None:
-            payload["latitude"] = self.latitude
-        if self.longitude is not None:
-            payload["longitude"] = self.longitude
-        if self.timestamp is not None:
-            payload["timestamp"] = self.timestamp
-        return payload
+        return _filter_none(
+            {
+                "brand": self.brand,
+                "cost": self.cost,
+                "distanceKm": self.distance_km,
+                "fuelAmountLiters": self.fuel_amount_liters,
+                "currency": self.currency,
+                "originalCost": self.original_cost,
+                "exchangeRate": self.exchange_rate,
+                "vehicleId": self.vehicle_id,
+                "latitude": self.latitude,
+                "longitude": self.longitude,
+                "timestamp": self.timestamp,
+            }
+        )
 
 
 @dataclass
@@ -175,30 +164,21 @@ class UpdateFuelLogRequest:
     timestamp: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        payload: dict[str, Any] = {}
-        if self.brand is not None:
-            payload["brand"] = self.brand
-        if self.cost is not None:
-            payload["cost"] = self.cost
-        if self.distance_km is not None:
-            payload["distanceKm"] = self.distance_km
-        if self.fuel_amount_liters is not None:
-            payload["fuelAmountLiters"] = self.fuel_amount_liters
-        if self.currency is not None:
-            payload["currency"] = self.currency
-        if self.original_cost is not None:
-            payload["originalCost"] = self.original_cost
-        if self.exchange_rate is not None:
-            payload["exchangeRate"] = self.exchange_rate
-        if self.vehicle_id is not None:
-            payload["vehicleId"] = self.vehicle_id
-        if self.latitude is not None:
-            payload["latitude"] = self.latitude
-        if self.longitude is not None:
-            payload["longitude"] = self.longitude
-        if self.timestamp is not None:
-            payload["timestamp"] = self.timestamp
-        return payload
+        return _filter_none(
+            {
+                "brand": self.brand,
+                "cost": self.cost,
+                "distanceKm": self.distance_km,
+                "fuelAmountLiters": self.fuel_amount_liters,
+                "currency": self.currency,
+                "originalCost": self.original_cost,
+                "exchangeRate": self.exchange_rate,
+                "vehicleId": self.vehicle_id,
+                "latitude": self.latitude,
+                "longitude": self.longitude,
+                "timestamp": self.timestamp,
+            }
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -245,18 +225,18 @@ class CreateVehicleRequest:
     is_default: bool | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        payload: dict[str, Any] = {
-            "name": self.name,
-            "make": self.make,
-            "model": self.model,
-            "year": self.year,
-            "fuelType": self.fuel_type.value
-            if isinstance(self.fuel_type, FuelType)
-            else self.fuel_type,
-        }
-        if self.is_default is not None:
-            payload["isDefault"] = self.is_default
-        return payload
+        return _filter_none(
+            {
+                "name": self.name,
+                "make": self.make,
+                "model": self.model,
+                "year": self.year,
+                "fuelType": self.fuel_type.value
+                if isinstance(self.fuel_type, FuelType)
+                else self.fuel_type,
+                "isDefault": self.is_default,
+            }
+        )
 
 
 @dataclass
@@ -272,24 +252,21 @@ class UpdateVehicleRequest:
     is_archived: bool | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        payload: dict[str, Any] = {}
-        if self.name is not None:
-            payload["name"] = self.name
-        if self.make is not None:
-            payload["make"] = self.make
-        if self.model is not None:
-            payload["model"] = self.model
-        if self.year is not None:
-            payload["year"] = self.year
-        if self.fuel_type is not None:
-            payload["fuelType"] = (
-                self.fuel_type.value if isinstance(self.fuel_type, FuelType) else self.fuel_type
-            )
-        if self.is_default is not None:
-            payload["isDefault"] = self.is_default
-        if self.is_archived is not None:
-            payload["isArchived"] = self.is_archived
-        return payload
+        return _filter_none(
+            {
+                "name": self.name,
+                "make": self.make,
+                "model": self.model,
+                "year": self.year,
+                "fuelType": self.fuel_type.value
+                if isinstance(self.fuel_type, FuelType)
+                else self.fuel_type
+                if self.fuel_type is not None
+                else None,
+                "isDefault": self.is_default,
+                "isArchived": self.is_archived,
+            }
+        )
 
 
 # ---------------------------------------------------------------------------
