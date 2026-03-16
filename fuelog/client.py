@@ -96,18 +96,19 @@ class FuelogClient:
         self._token = token
         self._base_url = base_url.rstrip("/")
         self._timeout = timeout
+        self._cached_headers = {
+            "Authorization": f"Bearer {self._token}",
+            "Content-Type": "application/json",
+            "User-Agent": f"fuelog-python/{__version__}",
+            "Accept": "application/json",
+        }
 
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
 
     def _headers(self) -> dict[str, str]:
-        return {
-            "Authorization": f"Bearer {self._token}",
-            "Content-Type": "application/json",
-            "User-Agent": f"fuelog-python/{__version__}",
-            "Accept": "application/json",
-        }
+        return self._cached_headers
 
     def _url(self, params: dict[str, Any]) -> str:
         query = urlencode({k: v for k, v in params.items() if v is not None})
