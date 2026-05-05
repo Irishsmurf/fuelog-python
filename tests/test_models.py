@@ -109,6 +109,17 @@ class TestCreateFuelLogRequest:
         assert d["distanceKm"] == 400.0
         assert d["fuelAmountLiters"] == 35.0
 
+    def test_to_dict_minimal(self):
+        req = CreateFuelLogRequest(
+            brand="Shell", cost=50.0, distance_km=400.0, fuel_amount_liters=35.0
+        )
+        assert req.to_dict() == {
+            "brand": "Shell",
+            "cost": 50.0,
+            "distanceKm": 400.0,
+            "fuelAmountLiters": 35.0,
+        }
+
     def test_optional_fields_omitted_when_none(self):
         req = CreateFuelLogRequest(
             brand="Shell", cost=50.0, distance_km=400.0, fuel_amount_liters=35.0
