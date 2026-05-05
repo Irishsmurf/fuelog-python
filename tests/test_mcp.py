@@ -756,6 +756,7 @@ class TestMCPValidation:
     def test_edit_fuel_log_longitude_validation(self, mcp_client):
         with pytest.raises(ValueError, match="longitude must be between -180 and 180"):
             mcp_client.edit_fuel_log(log_id="log1", longitude=181.0)
+
     def test_edit_fuel_log_with_valid_coordinates(self, mcp_client):
         captured = {}
 
