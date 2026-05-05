@@ -414,23 +414,37 @@ class TestMCPPromptResult:
 
 def test_create_fuel_log_latitude_validation():
     with pytest.raises(ValueError, match="latitude must be between -90 and 90"):
-        CreateFuelLogRequest(brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, latitude=91.0)
+        CreateFuelLogRequest(
+            brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, latitude=91.0
+        )
 
     with pytest.raises(ValueError, match="latitude must be between -90 and 90"):
-        CreateFuelLogRequest(brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, latitude=-91.0)
+        CreateFuelLogRequest(
+            brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, latitude=-91.0
+        )
 
-    req = CreateFuelLogRequest(brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, latitude=90.0)
+    req = CreateFuelLogRequest(
+        brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, latitude=90.0
+    )
     assert req.latitude == 90.0
+
 
 def test_create_fuel_log_longitude_validation():
     with pytest.raises(ValueError, match="longitude must be between -180 and 180"):
-        CreateFuelLogRequest(brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, longitude=181.0)
+        CreateFuelLogRequest(
+            brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, longitude=181.0
+        )
 
     with pytest.raises(ValueError, match="longitude must be between -180 and 180"):
-        CreateFuelLogRequest(brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, longitude=-181.0)
+        CreateFuelLogRequest(
+            brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, longitude=-181.0
+        )
 
-    req = CreateFuelLogRequest(brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, longitude=180.0)
+    req = CreateFuelLogRequest(
+        brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, longitude=180.0
+    )
     assert req.longitude == 180.0
+
 
 def test_update_fuel_log_latitude_validation():
     with pytest.raises(ValueError, match="latitude must be between -90 and 90"):
@@ -441,6 +455,7 @@ def test_update_fuel_log_latitude_validation():
 
     req = UpdateFuelLogRequest(latitude=90.0)
     assert req.latitude == 90.0
+
 
 def test_update_fuel_log_longitude_validation():
     with pytest.raises(ValueError, match="longitude must be between -180 and 180"):
