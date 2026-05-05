@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from fuelog.models import (
     AnalyticsStats,
     CostOptimizationPeriod,
@@ -408,8 +410,7 @@ class TestMCPPromptResult:
         pr = MCPPromptResult.from_dict({"messages": []})
         assert pr.messages == []
         assert pr.description is None
-import pytest
-from fuelog.models import CreateFuelLogRequest, UpdateFuelLogRequest
+
 
 def test_create_fuel_log_latitude_validation():
     with pytest.raises(ValueError, match="latitude must be between -90 and 90"):

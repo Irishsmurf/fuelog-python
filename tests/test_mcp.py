@@ -734,7 +734,6 @@ class TestMCPPrompts:
 # Validation
 # ---------------------------------------------------------------------------
 
-import pytest
 
 class TestMCPValidation:
     def test_log_fuel_latitude_validation(self, mcp_client):
