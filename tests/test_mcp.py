@@ -729,3 +729,26 @@ class TestMCPPrompts:
             mcp_client.cost_optimization(period=CostOptimizationPeriod.LAST_YEAR)
 
         assert captured["args"]["period"] == "last_year"
+
+# ---------------------------------------------------------------------------
+# Validation
+# ---------------------------------------------------------------------------
+
+import pytest
+
+class TestMCPValidation:
+    def test_log_fuel_latitude_validation(self, mcp_client):
+        with pytest.raises(ValueError, match="latitude must be between -90 and 90"):
+            mcp_client.log_fuel(brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, latitude=91.0)
+
+    def test_log_fuel_longitude_validation(self, mcp_client):
+        with pytest.raises(ValueError, match="longitude must be between -180 and 180"):
+            mcp_client.log_fuel(brand="BP", cost=50.0, distance_km=300.0, fuel_amount_liters=30.0, longitude=181.0)
+
+    def test_edit_fuel_log_latitude_validation(self, mcp_client):
+        with pytest.raises(ValueError, match="latitude must be between -90 and 90"):
+            mcp_client.edit_fuel_log(log_id="log1", latitude=91.0)
+
+    def test_edit_fuel_log_longitude_validation(self, mcp_client):
+        with pytest.raises(ValueError, match="longitude must be between -180 and 180"):
+            mcp_client.edit_fuel_log(log_id="log1", longitude=181.0)

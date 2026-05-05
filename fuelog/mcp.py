@@ -177,6 +177,11 @@ class FuelogMCPClient:
         Returns:
             :class:`~fuelog.models.MCPToolResult`
         """
+        if latitude is not None and not (-90.0 <= latitude <= 90.0):
+            raise ValueError(f"latitude must be between -90 and 90, got {latitude}")
+        if longitude is not None and not (-180.0 <= longitude <= 180.0):
+            raise ValueError(f"longitude must be between -180 and 180, got {longitude}")
+
         args: dict[str, Any] = {
             "brand": brand,
             "cost": cost,
@@ -211,6 +216,8 @@ class FuelogMCPClient:
         original_cost: float | None = None,
         exchange_rate: float | None = None,
         vehicle_id: str | None = None,
+        latitude: float | None = None,
+        longitude: float | None = None,
     ) -> MCPToolResult:
         """Invoke the ``edit_fuel_log`` MCP tool.
 
@@ -222,6 +229,11 @@ class FuelogMCPClient:
         Returns:
             :class:`~fuelog.models.MCPToolResult`
         """
+        if latitude is not None and not (-90.0 <= latitude <= 90.0):
+            raise ValueError(f"latitude must be between -90 and 90, got {latitude}")
+        if longitude is not None and not (-180.0 <= longitude <= 180.0):
+            raise ValueError(f"longitude must be between -180 and 180, got {longitude}")
+
         args: dict[str, Any] = {"logId": log_id}
         if brand is not None:
             args["brand"] = brand
@@ -239,6 +251,10 @@ class FuelogMCPClient:
             args["exchangeRate"] = exchange_rate
         if vehicle_id is not None:
             args["vehicleId"] = vehicle_id
+        if latitude is not None:
+            args["latitude"] = latitude
+        if longitude is not None:
+            args["longitude"] = longitude
         result = self._rpc("tools/call", {"name": "edit_fuel_log", "arguments": args})
         return MCPToolResult.from_dict(result)
 

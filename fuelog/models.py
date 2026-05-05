@@ -131,6 +131,12 @@ class CreateFuelLogRequest:
     longitude: float | None = None
     timestamp: str | None = None
 
+    def __post_init__(self) -> None:
+        if self.latitude is not None and not (-90.0 <= self.latitude <= 90.0):
+            raise ValueError(f"latitude must be between -90 and 90, got {self.latitude}")
+        if self.longitude is not None and not (-180.0 <= self.longitude <= 180.0):
+            raise ValueError(f"longitude must be between -180 and 180, got {self.longitude}")
+
     def to_dict(self) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "brand": self.brand,
@@ -173,6 +179,12 @@ class UpdateFuelLogRequest:
     latitude: float | None = None
     longitude: float | None = None
     timestamp: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.latitude is not None and not (-90.0 <= self.latitude <= 90.0):
+            raise ValueError(f"latitude must be between -90 and 90, got {self.latitude}")
+        if self.longitude is not None and not (-180.0 <= self.longitude <= 180.0):
+            raise ValueError(f"longitude must be between -180 and 180, got {self.longitude}")
 
     def to_dict(self) -> dict[str, Any]:
         payload: dict[str, Any] = {}
