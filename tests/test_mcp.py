@@ -756,3 +756,15 @@ class TestMCPValidation:
     def test_edit_fuel_log_longitude_validation(self, mcp_client):
         with pytest.raises(ValueError, match="longitude must be between -180 and 180"):
             mcp_client.edit_fuel_log(log_id="log1", longitude=181.0)
+    def test_edit_fuel_log_with_valid_coordinates(self, mcp_client):
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["args"] = json.loads(req.data.decode())["params"]["arguments"]
+            return make_response(_rpc_success(TOOL_RESPONSE))
+
+        with patch("fuelog.mcp.urlopen", side_effect=fake_urlopen):
+            mcp_client.edit_fuel_log(log_id="log1", latitude=45.0, longitude=90.0)
+
+        assert captured["args"]["latitude"] == 45.0
+        assert captured["args"]["longitude"] == 90.0
